@@ -54,13 +54,10 @@ Overall, the backend server plays a critical role in the success of the project 
 
 ## :sparkles: Features
 
-<!-- :heavy_check_mark: Plant Identification: The application uses an API to identify plants based on user-submitted images, providing users with accurate information on the name of their plant. \
-:heavy_check_mark: Disease Diagnosis: Users can use the API to determine whether their plants are sick and identify the specific disease affecting their plants, so they can take appropriate action to treat it. \
-:heavy_check_mark: Virtual Garden: Users can create a virtual garden and add their plants to it. This feature allows users to keep track of their plants' growth and health and share information with others. \
-:heavy_check_mark: Profile Creation: Users can create a profile using their email, Google, or Facebook account, which allows them to access all the features of the application. \
-:heavy_check_mark: Social Networking: Users can follow each other, post updates about their plants, and communicate with each other using the platform's messaging features. \
-:heavy_check_mark: Image Sharing: Users can post images of their plants for feedback from other users, providing a way for the community to support each other in their plant-growing endeavors. \
-:heavy_check_mark: API Integration: The application integrates with an API to provide accurate plant identification and disease diagnosis, making it easier for users to care for their plants. \ -->
+:heavy_check_mark: User management: Create, read, update, and delete users, as well as support for authentication and authorization using JWT and Passport.js. \
+:heavy_check_mark: Garden management: Create, read, update, and delete virtual gardens, by adding and removing plants to and from gardens. \
+:heavy_check_mark: Post and comment management: Create, read, update, and delete posts and comments, as well as liking posts. Users can post updates about their plants and share information with each other. \
+:heavy_check_mark: Communication: Support for following other users and communicating with each other through messaging. This feature allows users to get assistance from other users and share information about their plants. \
 
 ## :rocket: Technologies
 
