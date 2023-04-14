@@ -57,7 +57,7 @@ Overall, the backend server plays a critical role in the success of the project 
 :heavy_check_mark: User management: Create, read, update, and delete users, as well as support for authentication and authorization using JWT and Passport.js. \
 :heavy_check_mark: Garden management: Create, read, update, and delete virtual gardens, by adding and removing plants to and from gardens. \
 :heavy_check_mark: Post and comment management: Create, read, update, and delete posts and comments, as well as liking posts. Users can post updates about their plants and share information with each other. \
-:heavy_check_mark: Communication: Support for following other users and communicating with each other through messaging. This feature allows users to get assistance from other users and share information about their plants. \
+:heavy_check_mark: Communication: Support for following other users and communicating with each other through messaging. This feature allows users to get assistance from other users and share information about their plants.
 
 ## :rocket: Technologies
 
