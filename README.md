@@ -6,7 +6,7 @@
   <!-- <a href="https://capstonefe.netlify.app">Demo</a> -->
 </div>
 
-<h1 align="center">Capstone Project - FRONT END</h1>
+<h1 align="center">Capstone Project - BACK END</h1>
 
 <p align="center">
   <img alt="Github top language" src="https://img.shields.io/github/languages/top/Zaiido/capstone-fe?color=56BEB8">
