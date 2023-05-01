@@ -55,11 +55,17 @@ usersRouter.get(
 
 usersRouter.post("/register", checkUserSchema, generateBadRequest, async (request: Request, response: Response, next: NextFunction) => {
     try {
-        const newUser = new UsersModel(request.body);
-        const { _id } = await newUser.save();
-        const payload = { _id: _id };
-        const accessToken = await createAccessToken(payload);
-        response.status(201).send({ user: newUser, accessToken: accessToken });
+        const existingUser = await UsersModel.findOne({ email: request.body.email })
+        if (existingUser) {
+            next(createHttpError(400, "You already have an account linked to this email. Please log in instead."))
+        } else {
+            const newUser = new UsersModel(request.body);
+            const { _id } = await newUser.save();
+            const { accessToken } = await createTokens(newUser);
+            response.cookie("accessToken", accessToken);
+            response.status(201).send({ _id })
+        }
+
     } catch (error) {
         next(error);
     }
@@ -73,8 +79,8 @@ usersRouter.post("/login", async (request, response, next) => {
         const user = await UsersModel.checkCredentials(email, password)
 
         if (user) {
-            const { accessToken, refreshToken } = await createTokens(user)
-            response.send({ accessToken, refreshToken })
+            const { accessToken } = await createTokens(user)
+            response.cookie("accessToken", accessToken);
         } else {
             next(createHttpError(401, "Credentials are not ok!"))
         }
