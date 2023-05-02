@@ -81,8 +81,9 @@ usersRouter.post("/login", async (request, response, next) => {
         if (user) {
             const { accessToken } = await createTokens(user)
             response.cookie("accessToken", accessToken);
+            response.status(200).send()
         } else {
-            next(createHttpError(401, "Credentials are not ok!"))
+            next(createHttpError(401, "Invalid email or password. Please double-check your credentials and try again."))
         }
     } catch (error) {
         next(error)
