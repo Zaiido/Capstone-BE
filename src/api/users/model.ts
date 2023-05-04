@@ -17,7 +17,16 @@ const UsersSchema = new Schema(
         },
         refreshToken: { type: String },
         googleId: { type: String },
-        facebookId: { type: String }
+        facebookId: { type: String },
+        receivedRequests: {
+            pending: [{ type: Schema.Types.ObjectId, ref: "User" }],
+        },
+        sendRequests: {
+            pending: [{ type: Schema.Types.ObjectId, ref: "User" }],
+        },
+        followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
+        following: [{ type: Schema.Types.ObjectId, ref: "User" }],
+
     },
     { timestamps: true }
 );

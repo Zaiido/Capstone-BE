@@ -7,6 +7,7 @@ import passport from "passport";
 import googleStrategy from "./lib/auth/googleOAuth";
 import facebookStrategy from "./lib/auth/facebookOAuth";
 import postsRouter from "./api/posts";
+import commentsRouter from "./api/comments";
 
 const expressServer = Express();
 
@@ -24,6 +25,7 @@ expressServer.use(passport.initialize());
 
 expressServer.use("/users", usersRouter)
 expressServer.use("/posts", postsRouter)
+expressServer.use("/posts", commentsRouter)
 
 //ERROR HANDLERS
 expressServer.use(badRequestHandler);
