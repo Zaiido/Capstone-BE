@@ -63,8 +63,7 @@ usersRouter.post("/register", checkUserSchema, generateBadRequest, async (reques
             const newUser = new UsersModel(request.body);
             const { _id } = await newUser.save();
             const { accessToken } = await createTokens(newUser);
-            response.cookie("accessToken", accessToken);
-            response.status(201).send({ _id })
+            response.status(201).send({ _id, accessToken })
         }
 
     } catch (error) {
@@ -81,8 +80,7 @@ usersRouter.post("/login", async (request, response, next) => {
 
         if (user) {
             const { accessToken } = await createTokens(user)
-            response.cookie("accessToken", accessToken);
-            response.status(200).send()
+            response.send({ accessToken })
         } else {
             next(createHttpError(401, "Invalid email or password. Please double-check your credentials and try again."))
         }

@@ -13,7 +13,6 @@ const facebookStrategy = new FacebookStrategy(
     async (_, __, profile, passportNext) => {
         try {
             const { name, id, email } = profile._json;
-            console.log("PROFILE:", profile);
 
             const user = await UsersModel.findOne({ email });
 
