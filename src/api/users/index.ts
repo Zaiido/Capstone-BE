@@ -138,7 +138,7 @@ const cloudinaryUploader = multer({
     storage: new CloudinaryStorage({
         cloudinary,
         params: {
-            folder: "fs0522/capstone-avatars",
+            folder: "Capstone/users",
         } as Params,
     }),
 }).single("avatar");
