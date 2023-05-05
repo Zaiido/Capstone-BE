@@ -170,7 +170,7 @@ usersRouter.get("/:id", JWTAuthMiddleware, async (request, response, next) => {
 });
 
 
-usersRouter.get("/:userId/receivedRequests", async (request, response, next) => {
+usersRouter.get("/:userId/receivedRequests", JWTAuthMiddleware, async (request, response, next) => {
     try {
         const user = await UsersModel.findById(
             request.params.userId,
@@ -191,14 +191,14 @@ usersRouter.get("/:userId/receivedRequests", async (request, response, next) => 
     }
 });
 
-usersRouter.get("/:userId/sentRequests", async (request, response, next) => {
+usersRouter.get("/:userId/sentRequests", JWTAuthMiddleware, async (request, response, next) => {
     try {
         const user = await UsersModel.findById(
             request.params.userId,
-            "sendRequests.pending"
-        ).populate("sendRequests.pending", "username avatar");
+            "sentRequests.pending"
+        ).populate("sentRequests.pending", "username avatar");
         if (user) {
-            response.send(user.sendRequests.pending);
+            response.send(user.sentRequests.pending);
         } else {
             next(
                 createHttpError(404, `User with id ${request.params.userId} not found!`)
@@ -209,7 +209,7 @@ usersRouter.get("/:userId/sentRequests", async (request, response, next) => {
     }
 });
 
-usersRouter.get("/:userId/followers", async (request, response, next) => {
+usersRouter.get("/:userId/followers", JWTAuthMiddleware, async (request, response, next) => {
     try {
         const user = await UsersModel.findById(request.params.userId, "followers").populate("followers", "username avatar");
         if (user) {
@@ -224,7 +224,7 @@ usersRouter.get("/:userId/followers", async (request, response, next) => {
     }
 });
 
-usersRouter.get("/:userId/following", async (request, response, next) => {
+usersRouter.get("/:userId/following", JWTAuthMiddleware, async (request, response, next) => {
     try {
         const user = await UsersModel.findById(
             request.params.userId,
@@ -242,7 +242,7 @@ usersRouter.get("/:userId/following", async (request, response, next) => {
     }
 });
 
-usersRouter.post("/:userId/manageRequest", async (request, response, next) => {
+usersRouter.post("/:userId/manageRequest", JWTAuthMiddleware, async (request, response, next) => {
     try {
         const { action, senderId } = request.body;
 
@@ -258,7 +258,7 @@ usersRouter.post("/:userId/manageRequest", async (request, response, next) => {
             const sender = await UsersModel.findByIdAndUpdate(
                 senderId,
                 {
-                    $pull: { "sendRequests.pending": request.params.userId },
+                    $pull: { "sentRequests.pending": request.params.userId },
                     $push: { following: request.params.userId },
                 },
                 { new: true, runValidators: true }
@@ -272,7 +272,7 @@ usersRouter.post("/:userId/manageRequest", async (request, response, next) => {
             );
             const sender = await UsersModel.findByIdAndUpdate(
                 senderId,
-                { $pull: { "sendRequests.pending": request.params.userId } },
+                { $pull: { "sentRequests.pending": request.params.userId } },
                 { new: true, runValidators: true }
             );
             response.send({ user, sender });
@@ -303,13 +303,13 @@ usersRouter.post("/:senderId/sendRequest", async (request, response, next) => {
                 { new: true, runValidators: true }
             );
             response.send({
-                sender: sender!.sendRequests.pending,
+                sender: sender!.sentRequests.pending,
                 receiver: receiver!.receivedRequests.pending,
             });
-        } else if (sender!.sendRequests.pending.includes(receiverId)) {
+        } else if (sender!.sentRequests.pending.includes(receiverId)) {
             const deleteSendRequest = await UsersModel.findByIdAndUpdate(
                 request.params.senderId,
-                { $pull: { "sendRequests.pending": receiverId } },
+                { $pull: { "sentRequests.pending": receiverId } },
                 { new: true, runValidators: true }
             );
             const deleteReceivedRequest = await UsersModel.findByIdAndUpdate(
@@ -322,12 +322,12 @@ usersRouter.post("/:senderId/sendRequest", async (request, response, next) => {
                 deleteReceivedRequest,
             });
         } else {
-            sender!.sendRequests.pending.push(receiverId);
+            sender!.sentRequests.pending.push(receiverId);
             receiver!.receivedRequests.pending.push(new mongoose.Types.ObjectId(senderId));
             await sender!.save();
             await receiver!.save();
             response.send({
-                sender: sender!.sendRequests.pending,
+                sender: sender!.sentRequests.pending,
                 receiver: receiver!.receivedRequests.pending,
                 senderId: senderId,
                 receiverId: receiverId,
@@ -339,7 +339,7 @@ usersRouter.post("/:senderId/sendRequest", async (request, response, next) => {
 });
 
 
-usersRouter.post("/:userId/removeFollower", async (request, response, next) => {
+usersRouter.post("/:userId/removeFollower", JWTAuthMiddleware, async (request, response, next) => {
     try {
         const { followerId } = request.body
         const user = await UsersModel.findByIdAndUpdate(
@@ -347,7 +347,14 @@ usersRouter.post("/:userId/removeFollower", async (request, response, next) => {
             { $pull: { followers: followerId } },
             { new: true, runValidators: true }
         );
-        response.send(user)
+
+        const follower = await UsersModel.findByIdAndUpdate(
+            followerId,
+            { $pull: { following: request.params.userId } },
+            { new: true, runValidators: true }
+        );
+
+        response.send({ user, follower })
     } catch (error) {
         next(error)
     }

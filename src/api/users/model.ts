@@ -21,7 +21,7 @@ const UsersSchema = new Schema(
         receivedRequests: {
             pending: [{ type: Schema.Types.ObjectId, ref: "User" }],
         },
-        sendRequests: {
+        sentRequests: {
             pending: [{ type: Schema.Types.ObjectId, ref: "User" }],
         },
         followers: [{ type: Schema.Types.ObjectId, ref: "User" }],

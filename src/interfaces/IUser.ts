@@ -16,7 +16,7 @@ export interface IUser {
     receivedRequests: {
         pending: IObjectId[],
     },
-    sendRequests: {
+    sentRequests: {
         pending: IObjectId[],
     },
     followers: IObjectId[],
