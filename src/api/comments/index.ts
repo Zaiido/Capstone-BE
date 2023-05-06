@@ -3,14 +3,23 @@ import createHttpError from 'http-errors';
 import CommentsModel from './model';
 import PostsModel from "../posts/model";
 import UsersModel from "../users/model";
+import { JWTAuthMiddleware } from '../../lib/auth/jwt';
 
 
 const commentsRouter = Express.Router()
 
-commentsRouter.get('/:postId/comments', async (request, response, next) => {
+commentsRouter.get('/:postId/comments', JWTAuthMiddleware, async (request, response, next) => {
     try {
         const postId = request.params.postId;
-        const comments = await CommentsModel.find({ post: postId }).populate('user');
+        const comments = await CommentsModel.find({ post: postId }).populate(
+            [{
+                path: "user",
+                select: "username avatar",
+            },
+            {
+                path: "likes",
+                select: "username avatar",
+            }]);
         response.send(comments);
     } catch (error) {
         next(error);
@@ -34,7 +43,7 @@ commentsRouter.get('/:postId/comments/:commentId', async (request, response, nex
 });
 
 
-commentsRouter.post('/:postId/comments', async (request, response, next) => {
+commentsRouter.post('/:postId/comments', JWTAuthMiddleware, async (request, response, next) => {
     try {
         const postId = request.params.postId;
         const newComment = new CommentsModel({ ...request.body, post: postId });
@@ -77,6 +86,27 @@ commentsRouter.put('/:postId/comments/:commentId', async (request, response, nex
     }
 });
 
+commentsRouter.get("/:postId/comments/:commentId/likes", JWTAuthMiddleware, async (request, response, next) => {
+    try {
+        const comment = await CommentsModel.findById(request.params.commentId).populate([
+            {
+                path: "user",
+                select: "username avatar",
+            },
+            {
+                path: "likes",
+                select: "username avatar",
+            },
+        ]);
+        if (comment) {
+            response.send(comment.likes);
+        } else {
+            next(createHttpError(404, `Comment with id ${request.params.commentId} not found`));
+        }
+    } catch (error) {
+        next(error);
+    }
+});
 
 
 commentsRouter.post("/:postId/comments/:commentId/like", async (request, response, next) => {

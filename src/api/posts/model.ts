@@ -12,6 +12,7 @@ const postSchema = new Schema(
             default: [],
             type: [{ type: Schema.Types.ObjectId, ref: "User" }],
         },
+        repost: { type: Schema.Types.ObjectId, ref: "Post" }
     },
     {
         timestamps: true,
