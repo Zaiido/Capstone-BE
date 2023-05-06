@@ -6,32 +6,33 @@ import { CloudinaryStorage } from "multer-storage-cloudinary";
 import multer from "multer";
 import UsersModal from "../users/model";
 import { Params } from "express-serve-static-core";
+import { JWTAuthMiddleware } from "../../lib/auth/jwt";
 
 
 const postsRouter = Express.Router();
 
-postsRouter.post("/", async (request, response, next) => {
+postsRouter.post("/", JWTAuthMiddleware, async (request, response, next) => {
     try {
         const newPost = new PostsModel(request.body);
-        const { _id } = await newPost.save();
+        const { _id } = await newPost.save()
+        response.status(201).send({ _id })
 
-        response.status(201).send({ _id });
     } catch (error) {
         next(error);
     }
 });
 
-postsRouter.get("/", async (request, response, next) => {
+postsRouter.get("/", JWTAuthMiddleware, async (request, response, next) => {
     try {
         const posts = await PostsModel.find()
             .populate([
                 {
                     path: "user",
-                    select: "name surname avatar",
+                    select: "username avatar",
                 },
                 {
                     path: "likes",
-                    select: "name surname avatar",
+                    select: "username avatar",
                 },
             ]);
         response.send(posts);
@@ -40,16 +41,16 @@ postsRouter.get("/", async (request, response, next) => {
     }
 });
 
-postsRouter.get("/:postId", async (request, response, next) => {
+postsRouter.get("/:postId", JWTAuthMiddleware, async (request, response, next) => {
     try {
         const posts = await PostsModel.findById(request.params.postId).populate([
             {
                 path: "user",
-                select: "name surname avatar",
+                select: "username avatar",
             },
             {
                 path: "likes",
-                select: "name surname avatar",
+                select: "username avatar",
             },
         ]);
 
@@ -66,7 +67,7 @@ postsRouter.get("/:postId", async (request, response, next) => {
 });
 
 
-postsRouter.put("/:postId", async (request, response, next) => {
+postsRouter.put("/:postId", JWTAuthMiddleware, async (request, response, next) => {
     try {
         const updatedPost = await PostsModel.findByIdAndUpdate(
             request.params.postId,
@@ -86,7 +87,7 @@ postsRouter.put("/:postId", async (request, response, next) => {
 });
 
 
-postsRouter.delete("/:postId", async (request, response, next) => {
+postsRouter.delete("/:postId", JWTAuthMiddleware, async (request, response, next) => {
     try {
         const deletedPost = await PostsModel.findByIdAndDelete(request.params.postId);
         if (deletedPost) {
@@ -111,9 +112,9 @@ const cloudinaryPostImageUploader = multer({
     }),
 }).single("postImage");
 
-postsRouter.post("/image", cloudinaryPostImageUploader, async (request, response, next) => {
+postsRouter.post("/image", JWTAuthMiddleware, cloudinaryPostImageUploader, async (request, response, next) => {
     try {
-        const newPost = new PostsModel({ image: request.file!.path });
+        const newPost = new PostsModel({ image: request.file!.path, text: request.body.text, user: request.body.user });
         const { _id } = await newPost.save();
         response.status(201).send({ _id });
     } catch (error) {
@@ -133,9 +134,9 @@ const cloudinaryPostVideoUploader = multer({
     }),
 }).single("postVideo");
 
-postsRouter.post("/video", cloudinaryPostVideoUploader, async (request, response, next) => {
+postsRouter.post("/video", JWTAuthMiddleware, cloudinaryPostVideoUploader, async (request, response, next) => {
     try {
-        const newPost = new PostsModel({ video: request.file!.path });
+        const newPost = new PostsModel({ video: request.file!.path, text: request.body.text, user: request.body.user });
         const { _id } = await newPost.save();
         response.status(201).send({ _id });
     } catch (error) {
@@ -145,20 +146,20 @@ postsRouter.post("/video", cloudinaryPostVideoUploader, async (request, response
 );
 
 
-postsRouter.get("/:postId/like", async (request, response, next) => {
+postsRouter.get("/:postId/likes", JWTAuthMiddleware, async (request, response, next) => {
     try {
         const post = await PostsModel.findById(request.params.postId).populate([
             {
                 path: "user",
-                select: "name surname avatar",
+                select: "username avatar",
             },
             {
                 path: "likes",
-                select: "name surname avatar",
+                select: "username avatar",
             },
         ]);
         if (post) {
-            response.send(post);
+            response.send(post.likes);
         } else {
             next(createHttpError(404, `Post with id ${request.params.postId} not found`));
         }
