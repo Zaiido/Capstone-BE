@@ -1,6 +1,11 @@
 import Express from 'express'
 import ChatsModel from './model'
 import createHttpError from 'http-errors'
+import { JWTAuthMiddleware } from '../../lib/auth/jwt'
+import { Params } from "express-serve-static-core";
+import { v2 as cloudinary } from "cloudinary";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
+import multer from "multer";
 
 const chatsRouter = Express.Router()
 
@@ -87,6 +92,46 @@ chatsRouter.post("/", async (request, response, next) => {
         next(error)
     }
 })
+
+
+
+const cloudinaryMessageImageUploader = multer({
+    storage: new CloudinaryStorage({
+        cloudinary,
+        params: {
+            folder: "Capstone/messages",
+        } as Params,
+    }),
+}).single("messageImage");
+
+chatsRouter.post("/messages/image", JWTAuthMiddleware, cloudinaryMessageImageUploader, async (request, response, next) => {
+    try {
+        response.status(201).send({ imageUrl: request.file!.path });
+    } catch (error) {
+        next(error);
+    }
+}
+);
+
+
+const cloudinaryMessageVideoUploader = multer({
+    storage: new CloudinaryStorage({
+        cloudinary,
+        params: {
+            folder: "Capstone/messages",
+            resource_type: "video",
+        } as Params,
+    }),
+}).single("messageVideo");
+
+chatsRouter.post("/messages/video", JWTAuthMiddleware, cloudinaryMessageVideoUploader, async (request, response, next) => {
+    try {
+        response.status(201).send({ videoUrl: request.file!.path });
+    } catch (error) {
+        next(error);
+    }
+}
+);
 
 
 export default chatsRouter

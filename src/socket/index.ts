@@ -19,7 +19,9 @@ export const connectionHandler = (socket: Socket) => {
             manualId: message.message.manualId,
             sender: new mongoose.Types.ObjectId(message.message.sender),
             text: message.message.text,
-            createdAt: message.message.createdAt
+            video: message.message.video,
+            image: message.message.image,
+            createdAt: message.message.createdAt,
         };
         let chat = await ChatModel.findByIdAndUpdate(
             roomName,

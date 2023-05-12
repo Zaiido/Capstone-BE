@@ -9,7 +9,8 @@ const ChatSchema = new Schema(
         messages: [
             {
                 text: { type: String, required: false },
-                media: { type: String, requierd: false },
+                image: { type: String, requierd: false },
+                video: { type: String, requierd: false },
                 sender: { type: Schema.Types.ObjectId, ref: "User" },
                 createdAt: { type: String },
                 manualId: { type: String }
