@@ -4,12 +4,17 @@ import createHttpError from 'http-errors'
 
 const chatsRouter = Express.Router()
 
-chatsRouter.get("/", async (request, response, next) => {
+chatsRouter.get("/personalChats/:userId", async (request, response, next) => {
     try {
-        const { userId } = request.body
+        const userId = request.params.userId
         const chats = await ChatsModel.find({
             members: { $all: [userId] },
-        });
+        }).populate(
+            {
+                path: "members",
+                select: "username avatar"
+            }
+        );
 
         response.send(chats)
 
@@ -21,7 +26,18 @@ chatsRouter.get("/", async (request, response, next) => {
 
 chatsRouter.get("/:chatId", async (request, response, next) => {
     try {
-        const chat = await ChatsModel.findById(request.params.chatId)
+        const chat = await ChatsModel.findById(request.params.chatId).populate([{
+            path: "members",
+            select: "username, avatar"
+        },
+        {
+            path: "messages",
+            populate: {
+                path: "sender",
+                select: "username avatar",
+            }
+
+        }])
         if (chat) {
             response.send(chat)
         } else {
@@ -35,7 +51,7 @@ chatsRouter.get("/:chatId", async (request, response, next) => {
 
 chatsRouter.post("/", async (request, response, next) => {
     try {
-        const { group } = request.body
+        const { group, name } = request.body
         if (group.length === 2) {
             const chat = await ChatsModel.findOne({
                 members: { $all: group, $size: 2 },
@@ -45,7 +61,8 @@ chatsRouter.post("/", async (request, response, next) => {
             } else {
                 const newChat = new ChatsModel({
                     members: group,
-                    messages: []
+                    messages: [],
+                    name
                 })
                 const chat = await newChat.save()
                 response.status(201).send(chat)
@@ -59,7 +76,8 @@ chatsRouter.post("/", async (request, response, next) => {
             } else {
                 const newChat = new ChatsModel({
                     members: group,
-                    messages: []
+                    messages: [],
+                    name
                 })
                 const chat = await newChat.save()
                 response.status(201).send(chat)

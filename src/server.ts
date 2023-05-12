@@ -9,13 +9,17 @@ import facebookStrategy from "./lib/auth/facebookOAuth";
 import postsRouter from "./api/posts";
 import commentsRouter from "./api/comments";
 import chatsRouter from "./api/chats";
+import { Server } from "socket.io"
+import { connectionHandler } from "./socket";
 
 const expressServer = Express();
 
-// SOCKET.IO
+// SOCKET.IO & PASSPORT
 const httpServer = createServer(expressServer);
 passport.use("google", googleStrategy);
 passport.use("facebook", facebookStrategy);
+const socketServer = new Server(httpServer)
+socketServer.on("connection", connectionHandler)
 
 //MIDDLEWARES
 expressServer.use(cors());

@@ -4,8 +4,15 @@ const { Schema, model } = mongoose;
 
 const ChatSchema = new Schema(
     {
+        name: { type: String },
         members: [{ type: Schema.Types.ObjectId, ref: "User", required: true }],
-        messages: [{ type: String, required: false }],
+        messages: [
+            {
+                text: { type: String, required: false },
+                media: { type: String, requierd: false },
+                sender: { type: Schema.Types.ObjectId, ref: "User" }
+            }
+        ]
     },
     { timestamps: true }
 );
