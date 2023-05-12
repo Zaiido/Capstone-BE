@@ -10,7 +10,9 @@ const ChatSchema = new Schema(
             {
                 text: { type: String, required: false },
                 media: { type: String, requierd: false },
-                sender: { type: Schema.Types.ObjectId, ref: "User" }
+                sender: { type: Schema.Types.ObjectId, ref: "User" },
+                createdAt: { type: String },
+                manualId: { type: String }
             }
         ]
     },

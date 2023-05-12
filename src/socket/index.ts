@@ -15,17 +15,25 @@ export const connectionHandler = (socket: Socket) => {
     });
 
     socket.on("sendMessage", async (message) => {
-        socket.to(roomName).emit("newMessage", message);
         let newMessage = {
+            manualId: message.message.manualId,
             sender: new mongoose.Types.ObjectId(message.message.sender),
             text: message.message.text,
             createdAt: message.message.createdAt
         };
-        await ChatModel.findByIdAndUpdate(
+        let chat = await ChatModel.findByIdAndUpdate(
             roomName,
             { $push: { messages: newMessage } },
             { new: true, runValidators: true }
-        );
+        ).populate({
+            path: "messages",
+            populate: {
+                path: "sender",
+                select: "username avatar",
+            }
+        });
+        let addedMessage = chat!.messages.find((msg) => msg.manualId === message.message.manualId);
+        socket.to(roomName).emit("newMessage", addedMessage);
 
     });
 
