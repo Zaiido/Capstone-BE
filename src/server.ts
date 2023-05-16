@@ -12,6 +12,7 @@ import chatsRouter from "./api/chats";
 import { Server } from "socket.io"
 import { connectionHandler } from "./socket";
 import gardenRouter from "./api/garden";
+import bodyParser from "body-parser";
 
 const expressServer = Express();
 
@@ -25,6 +26,7 @@ socketServer.on("connection", connectionHandler)
 //MIDDLEWARES
 expressServer.use(cors());
 expressServer.use(Express.json());
+expressServer.use(bodyParser.json({ limit: "100mb" }));
 expressServer.use(passport.initialize());
 
 //ENDPOINTS

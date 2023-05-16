@@ -22,10 +22,9 @@ gardenRouter.post("/", async (request, response, next) => {
 });
 
 
-gardenRouter.get("/", async (request, response, next) => {
+gardenRouter.get("/:userId", async (request, response, next) => {
     try {
-        const userId = request.body.userId;
-        const plants = await GardenModel.find({ owner: userId });
+        const plants = await GardenModel.find({ owner: request.params.userId });
         response.send(plants);
     }
     catch (error) {
