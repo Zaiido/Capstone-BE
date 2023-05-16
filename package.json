@@ -19,6 +19,7 @@
     "@types/http-errors": "^2.0.1",
     "@types/jsonwebtoken": "^9.0.2",
     "@types/multer": "^1.4.7",
+    "@types/node-fetch": "^2.6.4",
     "@types/passport": "^1.0.12",
     "@types/passport-facebook": "^2.1.11",
     "@types/passport-google-oauth20": "^2.0.11",

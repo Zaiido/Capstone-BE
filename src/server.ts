@@ -11,6 +11,7 @@ import commentsRouter from "./api/comments";
 import chatsRouter from "./api/chats";
 import { Server } from "socket.io"
 import { connectionHandler } from "./socket";
+import gardenRouter from "./api/garden";
 
 const expressServer = Express();
 
@@ -32,6 +33,7 @@ expressServer.use("/users", usersRouter)
 expressServer.use("/posts", postsRouter)
 expressServer.use("/posts", commentsRouter)
 expressServer.use("/chats", chatsRouter)
+expressServer.use("/garden", gardenRouter)
 
 //ERROR HANDLERS
 expressServer.use(badRequestHandler);
