@@ -53,6 +53,28 @@ gardenRouter.put("/:plantId", async (request, response, next) => {
 });
 
 
+const cloudinaryPlantImageUpdateUploader = multer({
+    storage: new CloudinaryStorage({
+        cloudinary,
+        params: {
+            folder: "Capstone/garden",
+        } as Params,
+    }),
+}).single("editPlantImage");
+
+gardenRouter.post("/editImage", cloudinaryPlantImageUpdateUploader, async (request, response, next) => {
+    try {
+        const imageUrl = request.file!.path
+        if (imageUrl) {
+            response.send({ imageUrl });
+        }
+    } catch (error) {
+        next(error);
+    }
+}
+);
+
+
 gardenRouter.delete("/:plantId", async (request, response, next) => {
     try {
         const deletedPlant = await GardenModel.findByIdAndDelete(request.params.plantId);
