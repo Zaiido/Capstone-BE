@@ -6,7 +6,11 @@ const deadPlantsRouter = Express.Router()
 deadPlantsRouter.get("/deadPlants/:userId", async (request, response, next) => {
     try {
         const deadPlantsNumber = await DeadPlantsModel.findOne({ owner: request.params.userId })
-        response.send({ deadPlants: deadPlantsNumber?.deadPlants })
+        if (deadPlantsNumber) {
+            response.send({ deadPlants: deadPlantsNumber.deadPlants })
+        } else {
+            response.send({ deadPlants: 0 })
+        }
     } catch (error) {
         next(error)
     }
