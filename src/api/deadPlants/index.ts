@@ -6,7 +6,7 @@ const deadPlantsRouter = Express.Router()
 deadPlantsRouter.get("/deadPlants/:userId", async (request, response, next) => {
     try {
         const deadPlantsNumber = await DeadPlantsModel.findOne({ owner: request.params.userId })
-        response.send({ deadPlantsNumber })
+        response.send({ deadPlants: deadPlantsNumber?.deadPlants })
     } catch (error) {
         next(error)
     }
