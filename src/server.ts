@@ -12,7 +12,7 @@ import chatsRouter from "./api/chats";
 import { Server } from "socket.io"
 import { connectionHandler } from "./socket";
 import gardenRouter from "./api/garden";
-import bodyParser from "body-parser";
+import deadPlantsRouter from "./api/deadPlants";
 
 const expressServer = Express();
 
@@ -26,7 +26,6 @@ socketServer.on("connection", connectionHandler)
 //MIDDLEWARES
 expressServer.use(cors());
 expressServer.use(Express.json());
-expressServer.use(bodyParser.json({ limit: "100mb" }));
 expressServer.use(passport.initialize());
 
 //ENDPOINTS
@@ -36,6 +35,7 @@ expressServer.use("/posts", postsRouter)
 expressServer.use("/posts", commentsRouter)
 expressServer.use("/chats", chatsRouter)
 expressServer.use("/garden", gardenRouter)
+expressServer.use("/garden", deadPlantsRouter)
 
 //ERROR HANDLERS
 expressServer.use(badRequestHandler);
