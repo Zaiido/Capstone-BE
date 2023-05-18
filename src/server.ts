@@ -13,6 +13,7 @@ import { Server } from "socket.io"
 import { connectionHandler } from "./socket";
 import gardenRouter from "./api/garden";
 import deadPlantsRouter from "./api/deadPlants";
+import storesRouter from "./api/stores";
 
 const expressServer = Express();
 
@@ -36,6 +37,7 @@ expressServer.use("/posts", commentsRouter)
 expressServer.use("/chats", chatsRouter)
 expressServer.use("/garden", gardenRouter)
 expressServer.use("/garden", deadPlantsRouter)
+expressServer.use("/stores", storesRouter)
 
 //ERROR HANDLERS
 expressServer.use(badRequestHandler);
