@@ -44,20 +44,13 @@ usersRouter.get(
     passport.authenticate("facebook", { session: false }),
     (request: any, response: Response, next: NextFunction) => {
         try {
-            const isProduction = process.env.NODE_ENV === "production";
-
-            response.cookie("accessToken", request.user!.accessToken, {
-                domain: isProduction ? "capstone-zaiido.vercel.app" : "localhost",
-                secure: isProduction,
-                sameSite: isProduction ? "none" : "lax",
-            });
+            response.cookie("accessToken", request.user!.accessToken, { domain: "capstone-zaiido.vercel.app" });
             response.redirect(`${process.env.FE_URL}`);
         } catch (error) {
             next(error);
         }
     }
 );
-
 
 
 
