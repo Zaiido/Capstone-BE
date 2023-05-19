@@ -1,4 +1,8 @@
-import { Model, Document } from "mongoose";
+import { Model, Document, Types } from "mongoose";
+
+export interface IObjectId {
+    _id: Types.ObjectId
+}
 
 export interface IUser {
     username: string;
@@ -7,6 +11,16 @@ export interface IUser {
     bio?: string;
     avatar?: string;
     refreshToken: string;
+    googleId: string;
+    facebookId: string;
+    receivedRequests: {
+        pending: IObjectId[],
+    },
+    sentRequests: {
+        pending: IObjectId[],
+    },
+    followers: IObjectId[],
+    following: IObjectId[],
 }
 
 export interface UserDocument extends IUser, Document { }

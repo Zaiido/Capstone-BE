@@ -17,7 +17,16 @@ const UsersSchema = new Schema(
         },
         refreshToken: { type: String },
         googleId: { type: String },
-        facebookId: { type: String }
+        facebookId: { type: String },
+        receivedRequests: {
+            pending: [{ type: Schema.Types.ObjectId, ref: "User" }],
+        },
+        sentRequests: {
+            pending: [{ type: Schema.Types.ObjectId, ref: "User" }],
+        },
+        followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
+        following: [{ type: Schema.Types.ObjectId, ref: "User" }],
+
     },
     { timestamps: true }
 );
@@ -60,4 +69,4 @@ UsersSchema.static("checkCredentials", async function (email, plainPW) {
     }
 });
 
-export default model<UserDocument, UserModel>("user", UsersSchema);
+export default model<UserDocument, UserModel>("User", UsersSchema);
