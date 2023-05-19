@@ -44,7 +44,7 @@ usersRouter.get(
     passport.authenticate("facebook", { session: false }),
     (request: any, response: Response, next: NextFunction) => {
         try {
-            response.cookie("accessToken", request.user!.accessToken, { sameSite: "none", secure: true, domain: "capstone-zaiido.vercel.app" });
+            response.cookie("accessToken", request.user!.accessToken, { sameSite: "none", secure: true });
             response.redirect(`${process.env.FE_URL}`);
         } catch (error) {
             next(error);
