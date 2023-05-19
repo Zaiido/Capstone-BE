@@ -44,7 +44,7 @@ usersRouter.get(
     passport.authenticate("facebook", { session: false }),
     (request: any, response: Response, next: NextFunction) => {
         try {
-            response.cookie("accessToken", request.user!.accessToken);
+            response.cookie("accessToken", request.user!.accessToken, { domain: ".herokuapp.com" });
             response.redirect(`${process.env.FE_URL}`);
         } catch (error) {
             next(error);
