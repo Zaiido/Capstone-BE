@@ -11,7 +11,8 @@ import { JWTAuthMiddleware } from "../../lib/auth/jwt";
 
 const postsRouter = Express.Router();
 
-postsRouter.post("/", async (request, response, next) => {
+
+postsRouter.post("/", JWTAuthMiddleware, async (request, response, next) => {
     try {
         const newPost = new PostsModel(request.body);
         const { _id } = await newPost.save()
@@ -22,7 +23,8 @@ postsRouter.post("/", async (request, response, next) => {
     }
 });
 
-postsRouter.get("/", async (request, response, next) => {
+
+postsRouter.get("/", JWTAuthMiddleware, async (request, response, next) => {
     try {
         const posts = await PostsModel.find()
             .populate([
@@ -47,6 +49,7 @@ postsRouter.get("/", async (request, response, next) => {
         next(error);
     }
 });
+
 
 postsRouter.get("/:postId", JWTAuthMiddleware, async (request, response, next) => {
     try {
@@ -175,7 +178,7 @@ postsRouter.get("/:postId/likes", JWTAuthMiddleware, async (request, response, n
     }
 });
 
-postsRouter.post("/:postId/like", async (request, response, next) => {
+postsRouter.post("/:postId/like", JWTAuthMiddleware, async (request, response, next) => {
     try {
         const { userId } = request.body;
         const post = await PostsModel.findById(request.params.postId);

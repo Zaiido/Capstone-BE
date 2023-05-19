@@ -1,9 +1,10 @@
 import Express from "express";
 import StoresModel from './model'
+import { JWTAuthMiddleware } from "../../lib/auth/jwt";
 
 const storesRouter = Express.Router()
 
-storesRouter.get("/", async (request, response, next) => {
+storesRouter.get("/", JWTAuthMiddleware, async (request, response, next) => {
     try {
         const stores = await StoresModel.find()
         if (stores) {
@@ -15,7 +16,7 @@ storesRouter.get("/", async (request, response, next) => {
 })
 
 
-storesRouter.post("/", async (request, response, next) => {
+storesRouter.post("/", JWTAuthMiddleware, async (request, response, next) => {
     try {
         const newStore = new StoresModel(request.body);
         const { _id } = await newStore.save()

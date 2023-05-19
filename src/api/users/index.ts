@@ -283,7 +283,7 @@ usersRouter.post("/:userId/manageRequest", JWTAuthMiddleware, async (request, re
 });
 
 
-usersRouter.post("/:senderId/sendRequest", async (request, response, next) => {
+usersRouter.post("/:senderId/sendRequest", JWTAuthMiddleware, async (request, response, next) => {
     try {
         const { senderId } = request.params;
         const { receiverId } = request.body;

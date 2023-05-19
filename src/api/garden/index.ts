@@ -6,11 +6,12 @@ import { v2 as cloudinary } from "cloudinary";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import multer from "multer";
 import fetch from 'node-fetch';
+import { JWTAuthMiddleware } from '../../lib/auth/jwt';
 
 
 const gardenRouter = Express.Router()
 
-gardenRouter.post("/", async (request, response, next) => {
+gardenRouter.post("/", JWTAuthMiddleware, async (request, response, next) => {
     try {
         const newPlant = new GardenModel(request.body);
         const { _id } = await newPlant.save()
@@ -22,7 +23,7 @@ gardenRouter.post("/", async (request, response, next) => {
 });
 
 
-gardenRouter.get("/:userId", async (request, response, next) => {
+gardenRouter.get("/:userId", JWTAuthMiddleware, async (request, response, next) => {
     try {
         const plants = await GardenModel.find({ owner: request.params.userId });
         response.send(plants);
@@ -33,7 +34,7 @@ gardenRouter.get("/:userId", async (request, response, next) => {
 })
 
 
-gardenRouter.put("/:plantId", async (request, response, next) => {
+gardenRouter.put("/:plantId", JWTAuthMiddleware, async (request, response, next) => {
     try {
         const updatedPlant = await GardenModel.findByIdAndUpdate(
             request.params.plantId,
@@ -62,7 +63,7 @@ const cloudinaryPlantImageUpdateUploader = multer({
     }),
 }).single("editPlantImage");
 
-gardenRouter.post("/editImage", cloudinaryPlantImageUpdateUploader, async (request, response, next) => {
+gardenRouter.post("/editImage", JWTAuthMiddleware, cloudinaryPlantImageUpdateUploader, async (request, response, next) => {
     try {
         const imageUrl = request.file!.path
         if (imageUrl) {
@@ -75,7 +76,7 @@ gardenRouter.post("/editImage", cloudinaryPlantImageUpdateUploader, async (reque
 );
 
 
-gardenRouter.delete("/:plantId", async (request, response, next) => {
+gardenRouter.delete("/:plantId", JWTAuthMiddleware, async (request, response, next) => {
     try {
         const deletedPlant = await GardenModel.findByIdAndDelete(request.params.plantId);
         if (deletedPlant) {
@@ -100,7 +101,7 @@ const cloudinaryPlantImageUploader = multer({
     }),
 }).single("plantImage");
 
-gardenRouter.post("/identify", cloudinaryPlantImageUploader, async (request, response, next) => {
+gardenRouter.post("/identify", JWTAuthMiddleware, cloudinaryPlantImageUploader, async (request, response, next) => {
     try {
         const imageUrl = request.file!.path
         if (imageUrl) {

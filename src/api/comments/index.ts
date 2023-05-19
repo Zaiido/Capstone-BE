@@ -26,7 +26,7 @@ commentsRouter.get('/:postId/comments', JWTAuthMiddleware, async (request, respo
     }
 });
 
-commentsRouter.get('/:postId/comments/:commentId', async (request, response, next) => {
+commentsRouter.get('/:postId/comments/:commentId', JWTAuthMiddleware, async (request, response, next) => {
     try {
         const postId = request.params.postId;
         const commentId = request.params.commentId;
@@ -54,7 +54,7 @@ commentsRouter.post('/:postId/comments', JWTAuthMiddleware, async (request, resp
     }
 });
 
-commentsRouter.delete('/:postId/comments/:commentId', async (request, response, next) => {
+commentsRouter.delete('/:postId/comments/:commentId', JWTAuthMiddleware, async (request, response, next) => {
     try {
         const commentId = request.params.commentId;
         const deletedComment = await CommentsModel.findByIdAndDelete(commentId);
@@ -68,7 +68,7 @@ commentsRouter.delete('/:postId/comments/:commentId', async (request, response, 
     }
 });
 
-commentsRouter.put('/:postId/comments/:commentId', async (request, response, next) => {
+commentsRouter.put('/:postId/comments/:commentId', JWTAuthMiddleware, async (request, response, next) => {
     try {
         const commentId = request.params.commentId;
         const updatedComment = await CommentsModel.findByIdAndUpdate(
@@ -109,7 +109,7 @@ commentsRouter.get("/:postId/comments/:commentId/likes", JWTAuthMiddleware, asyn
 });
 
 
-commentsRouter.post("/:postId/comments/:commentId/like", async (request, response, next) => {
+commentsRouter.post("/:postId/comments/:commentId/like", JWTAuthMiddleware, async (request, response, next) => {
     try {
         const { userId } = request.body;
 

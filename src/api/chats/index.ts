@@ -9,7 +9,7 @@ import multer from "multer";
 
 const chatsRouter = Express.Router()
 
-chatsRouter.get("/personalChats/:userId", async (request, response, next) => {
+chatsRouter.get("/personalChats/:userId", JWTAuthMiddleware, async (request, response, next) => {
     try {
         const userId = request.params.userId
         const chats = await ChatsModel.find({
@@ -29,7 +29,7 @@ chatsRouter.get("/personalChats/:userId", async (request, response, next) => {
 })
 
 
-chatsRouter.get("/:chatId", async (request, response, next) => {
+chatsRouter.get("/:chatId", JWTAuthMiddleware, async (request, response, next) => {
     try {
         const chat = await ChatsModel.findById(request.params.chatId).populate([{
             path: "members",
@@ -54,7 +54,7 @@ chatsRouter.get("/:chatId", async (request, response, next) => {
 })
 
 
-chatsRouter.post("/", async (request, response, next) => {
+chatsRouter.post("/", JWTAuthMiddleware, async (request, response, next) => {
     try {
         const { group, name } = request.body
         if (group.length === 2) {

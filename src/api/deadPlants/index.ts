@@ -1,9 +1,10 @@
 import Express from "express";
 import DeadPlantsModel from './model'
+import { JWTAuthMiddleware } from "../../lib/auth/jwt";
 
 const deadPlantsRouter = Express.Router()
 
-deadPlantsRouter.get("/deadPlants/:userId", async (request, response, next) => {
+deadPlantsRouter.get("/deadPlants/:userId", JWTAuthMiddleware, async (request, response, next) => {
     try {
         const deadPlantsNumber = await DeadPlantsModel.findOne({ owner: request.params.userId })
         if (deadPlantsNumber) {
@@ -17,7 +18,7 @@ deadPlantsRouter.get("/deadPlants/:userId", async (request, response, next) => {
 })
 
 
-deadPlantsRouter.post("/deadPlants/:userId", async (request, response, next) => {
+deadPlantsRouter.post("/deadPlants/:userId", JWTAuthMiddleware, async (request, response, next) => {
     try {
         const { userId } = request.params;
 
