@@ -44,7 +44,7 @@ usersRouter.get(
     passport.authenticate("facebook", { session: false }),
     (request: any, response: Response, next: NextFunction) => {
         try {
-            response.cookie("accessToken", request.user!.accessToken, { domain: "localhost" });
+            response.cookie("accessToken", request.user!.accessToken, { sameSite: "none" });
             response.redirect(`${process.env.FE_URL}`);
         } catch (error) {
             next(error);
