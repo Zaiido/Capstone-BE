@@ -41,7 +41,7 @@ usersRouter.get(
 
 usersRouter.get(
     "/facebookRedirect",
-    passport.authenticate("facebook"),
+    passport.authenticate("facebook", { session: false }),
     (request: any, response: Response, next: NextFunction) => {
         try {
             response.cookie("accessToken", request.user!.accessToken);
