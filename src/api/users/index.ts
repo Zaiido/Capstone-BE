@@ -47,7 +47,7 @@ usersRouter.get(
             const isProduction = process.env.NODE_ENV === "production";
 
             response.cookie("accessToken", request.user!.accessToken, {
-                domain: isProduction ? ".vercel.app" : "localhost",
+                domain: isProduction ? "capstone-zaiido.vercel.app" : "localhost",
                 secure: isProduction,
                 sameSite: isProduction ? "none" : "lax",
             });
