@@ -14,6 +14,7 @@ import { connectionHandler } from "./socket";
 import gardenRouter from "./api/garden";
 import deadPlantsRouter from "./api/deadPlants";
 import storesRouter from "./api/stores";
+import createHttpError from "http-errors";
 
 const expressServer = Express();
 
@@ -25,7 +26,16 @@ const socketServer = new Server(httpServer)
 socketServer.on("connection", connectionHandler)
 
 //MIDDLEWARES
-expressServer.use(cors());
+const whitelist = [process.env.FE_DEV_URL, process.env.FE_PROD_URL]
+expressServer.use(cors({
+    origin: (currentOrigin, corsNext) => {
+        if (!currentOrigin || whitelist.indexOf(currentOrigin) !== -1) {
+            corsNext(null, true)
+        } else {
+            corsNext(createHttpError(400, `Origin ${currentOrigin} is not in the whitelist!`))
+        }
+    }
+}))
 expressServer.use(Express.json());
 expressServer.use(passport.initialize());
 

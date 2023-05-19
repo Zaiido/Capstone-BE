@@ -1,6 +1,5 @@
 import createHttpError from "http-errors"
 import { verifyAccessToken } from "./tools"
-import { UserRequest } from "../../interfaces/IAuth"
 import { RequestHandler } from "express"
 
 export const JWTAuthMiddleware: RequestHandler = async (request: any, response, next) => {
@@ -15,7 +14,6 @@ export const JWTAuthMiddleware: RequestHandler = async (request: any, response, 
             next()
 
         } catch (error) {
-            console.log(error)
             next(createHttpError(401, "Token not valid! Please log in again!"))
         }
     }

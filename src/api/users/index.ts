@@ -1,7 +1,7 @@
 import Express from "express";
 import UsersModel from "./model";
 import { JWTAuthMiddleware } from "../../lib/auth/jwt";
-import { createAccessToken, createTokens, verifyTokensAndCreateNewTokens } from "../../lib/auth/tools";
+import { createTokens, verifyTokensAndCreateNewTokens } from "../../lib/auth/tools";
 import { checkUserSchema, generateBadRequest } from "./validation";
 import { Request, Response, NextFunction } from "express";
 import passport from "passport";
