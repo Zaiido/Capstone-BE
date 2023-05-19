@@ -25,7 +25,7 @@ usersRouter.get(
     (request: any, response: Response, next: NextFunction) => {
         try {
             response.cookie("accessToken", request.user!.accessToken);
-            response.redirect(`${process.env.FE_URL}`);
+            response.redirect(`${process.env.FE_URL}?accessToken=${request.user!.accessToken}`);
         } catch (error) {
             next(error);
         }
@@ -44,8 +44,8 @@ usersRouter.get(
     passport.authenticate("facebook", { session: false }),
     (request: any, response: Response, next: NextFunction) => {
         try {
-            response.cookie("accessToken", request.user!.accessToken, { sameSite: "none", secure: true, domain: ".heroku.com" });
-            response.redirect(`${process.env.FE_URL}`);
+            response.cookie("accessToken", request.user!.accessToken);
+            response.redirect(`${process.env.FE_URL}?accessToken=${request.user!.accessToken}`);
         } catch (error) {
             next(error);
         }
